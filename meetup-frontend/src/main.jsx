@@ -1,10 +1,22 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import AuthProvider from "./providers/AuthProvider.jsx";
+import ApiProvider from "./providers/ApiProvider.jsx";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
+import { CookiesProvider } from "react-cookie";
 
-createRoot(document.getElementById('root')).render(
+const router = createRouter({ routeTree });
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
-)
+    <CookiesProvider>
+      <AuthProvider>
+        <ApiProvider>
+          <RouterProvider router={router} />
+        </ApiProvider>
+      </AuthProvider>
+    </CookiesProvider>
+  </StrictMode>
+);

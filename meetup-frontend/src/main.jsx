@@ -7,6 +7,8 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { CookiesProvider } from "react-cookie";
 
+import '@fontsource-variable/overpass';
+
 const router = createRouter({ routeTree });
 
 createRoot(document.getElementById("root")).render(

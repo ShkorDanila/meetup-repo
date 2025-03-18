@@ -1,28 +1,26 @@
 import axios from "axios";
 import { isEmpty } from "lodash";
-import React, { createContext, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-
-const ApiContext = createContext(null);
+import { ApiContext } from "../context/ApiContext";
 
 const ApiProvider = ({ children }) => {
   const [axiosInstance, setAxiosInstance] = useState(null);
   const [cookies] = useCookies(["auth-token"]);
-  const { token } = cookies;
 
   useLayoutEffect(() => {
-    if (token) {
+    if (cookies["auth-token"]) {
       const instance = axios.create({
         baseURL: "http://127.0.0.1:8090/api/collections",
         timeout: 1000,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${cookies["auth-token"]}`,
           "Content-Type": "multipart/form-data",
         },
       });
       setAxiosInstance(instance);
     }
-  }, [token]);
+  }, [cookies]);
 
   const getListOfEntities = async (config) => {
     let requestString = `/entity/records`;

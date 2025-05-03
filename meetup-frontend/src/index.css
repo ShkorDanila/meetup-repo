@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --color-white-app: #d8d8e2;
+  --color-dark-app: #101011;
+  --color-card-app: #7171752d;
+  --color-block-app: #1f1f20;
+}
+
 body,
 html,
 #root {
@@ -9,3 +16,9 @@ html,
   font-family: "Overpass Variable", sans-serif;
   color: #e7eef1;
 }
+
+span,
+button {
+  font-family: "Overpass Variable", sans-serif !important;
+}
+

@@ -11,9 +11,37 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ProfileImport } from './routes/profile'
+import { Route as PersonalCalendarImport } from './routes/personal-calendar'
+import { Route as MeetupsImport } from './routes/meetups'
+import { Route as DashboardImport } from './routes/dashboard'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const ProfileRoute = ProfileImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PersonalCalendarRoute = PersonalCalendarImport.update({
+  id: '/personal-calendar',
+  path: '/personal-calendar',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MeetupsRoute = MeetupsImport.update({
+  id: '/meetups',
+  path: '/meetups',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -32,6 +60,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/meetups': {
+      id: '/meetups'
+      path: '/meetups'
+      fullPath: '/meetups'
+      preLoaderRoute: typeof MeetupsImport
+      parentRoute: typeof rootRoute
+    }
+    '/personal-calendar': {
+      id: '/personal-calendar'
+      path: '/personal-calendar'
+      fullPath: '/personal-calendar'
+      preLoaderRoute: typeof PersonalCalendarImport
+      parentRoute: typeof rootRoute
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -39,32 +95,58 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/meetups': typeof MeetupsRoute
+  '/personal-calendar': typeof PersonalCalendarRoute
+  '/profile': typeof ProfileRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/meetups': typeof MeetupsRoute
+  '/personal-calendar': typeof PersonalCalendarRoute
+  '/profile': typeof ProfileRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/meetups': typeof MeetupsRoute
+  '/personal-calendar': typeof PersonalCalendarRoute
+  '/profile': typeof ProfileRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/dashboard' | '/meetups' | '/personal-calendar' | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/dashboard' | '/meetups' | '/personal-calendar' | '/profile'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/meetups'
+    | '/personal-calendar'
+    | '/profile'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
+  MeetupsRoute: typeof MeetupsRoute
+  PersonalCalendarRoute: typeof PersonalCalendarRoute
+  ProfileRoute: typeof ProfileRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRoute: DashboardRoute,
+  MeetupsRoute: MeetupsRoute,
+  PersonalCalendarRoute: PersonalCalendarRoute,
+  ProfileRoute: ProfileRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +159,27 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.jsx",
       "children": [
-        "/"
+        "/",
+        "/dashboard",
+        "/meetups",
+        "/personal-calendar",
+        "/profile"
       ]
     },
     "/": {
       "filePath": "index.jsx"
+    },
+    "/dashboard": {
+      "filePath": "dashboard.jsx"
+    },
+    "/meetups": {
+      "filePath": "meetups.jsx"
+    },
+    "/personal-calendar": {
+      "filePath": "personal-calendar.jsx"
+    },
+    "/profile": {
+      "filePath": "profile.jsx"
     }
   }
 }

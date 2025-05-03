@@ -1,27 +1,27 @@
 import axios from "axios";
-import { isEmpty } from "lodash";
-import React, { useLayoutEffect, useState } from "react";
+import { get, isEmpty } from "lodash";
+import React, { useMemo } from "react";
 import { useCookies } from "react-cookie";
 import { ApiContext } from "../context/ApiContext";
 
 const ApiProvider = ({ children }) => {
-  const [axiosInstance, setAxiosInstance] = useState(null);
-  const [cookies] = useCookies(["auth-token"]);
+  const [cookies] = useCookies(["user-data"]);
 
-  useLayoutEffect(() => {
-    if (cookies["auth-token"]) {
-      const instance = axios.create({
-        baseURL: "http://127.0.0.1:8090/api/collections",
-        timeout: 1000,
-        headers: {
-          Authorization: `Bearer ${cookies["auth-token"]}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      setAxiosInstance(instance);
-    }
-  }, [cookies]);
+  const axiosConfig = useMemo(
+    () => ({
+      baseURL: "http://127.0.0.1:8090/api/collections",
+      timeout: 1000,
+      headers: {
+        Authorization: `Bearer ${cookies["user-data"]?.token || ""}`,
+        "Content-Type": "multipart/form-data",
+      },
+    }),
+    [cookies]
+  );
 
+  const getAxiosConfig = () => {
+    return;
+  };
   const getListOfEntities = async (config) => {
     let requestString = `/entity/records`;
 
@@ -50,7 +50,7 @@ const ApiProvider = ({ children }) => {
     }
 
     if (!isEmpty(filter)) {
-      additions.push(`filter=(${filter.join(" && ")})`);
+      additions.push(`filter=(${filter.join(" %26%26 ")})`);
     }
 
     if (!isEmpty(sort)) {
@@ -69,8 +69,8 @@ const ApiProvider = ({ children }) => {
       requestString = requestString.concat("?", additions.join("&"));
     }
 
-    const { data } = axiosInstance.get(requestString);
-    return data;
+    const response = axios.get(requestString, axiosConfig);
+    return response ?? [];
   };
 
   const getEntityById = async (entity_id, config) => {
@@ -92,7 +92,7 @@ const ApiProvider = ({ children }) => {
       requestString = requestString.concat("?", additions.join("&"));
     }
 
-    const { data } = axiosInstance.get(requestString);
+    const { data } = axios.get(requestString, axiosConfig);
     return data;
   };
 
@@ -116,8 +116,8 @@ const ApiProvider = ({ children }) => {
       }
     }
 
-    const { data } = axiosInstance.post(requestString, formData);
-    return data;
+    const response = axios.post(requestString, formData, axiosConfig);
+    return response;
   };
 
   const updateEntity = async (entity_id, updateData = {}, files = []) => {
@@ -140,13 +140,13 @@ const ApiProvider = ({ children }) => {
       }
     }
 
-    const { data } = axiosInstance.patch(requestString, formData);
+    const { data } = axios.patch(requestString, formData, axiosConfig);
     return data;
   };
 
   const entityDelete = async (entity_id) => {
     let requestString = `/entity/records/${entity_id}`;
-    const { data } = axiosInstance.delete(requestString);
+    const { data } = axios.delete(requestString, axiosConfig);
     return data;
   };
 
@@ -156,6 +156,7 @@ const ApiProvider = ({ children }) => {
     entityDelete,
     getEntityById,
     createEntity,
+    getAxiosConfig,
   };
 
   return (

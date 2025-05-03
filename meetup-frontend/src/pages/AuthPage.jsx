@@ -4,13 +4,12 @@ import LogoIcon from "../customIcons/LogoIcon";
 import { useForm } from "@tanstack/react-form";
 import { Button, Input, Popover, Spin } from "antd";
 import FormInput from "../universalComponents/FormInput";
-import { useAntNotification } from "../utils/notification";
+import { BaseButton } from "../universalComponents/BaseButton";
 
 const AuthPage = () => {
   const { authenticate, register } = useContext(AuthContext);
 
   const [isNewUser, setIsNewUser] = useState(false);
-  const { antNotification } = useAntNotification();
 
   const form = useForm({
     defaultValues: {
@@ -154,21 +153,13 @@ const AuthPage = () => {
                 <form.Subscribe
                   selector={(state) => [state.canSubmit, state.isSubmitting]}
                   children={([canSubmit, isSubmitting]) => (
-                    <Button
-                      className='!text-black !rounded-none !bg-white hover:!bg-black hover:!text-white '
-                      htmlType='submit'
+                    <BaseButton
+                      loading={isSubmitting}
                       disabled={!canSubmit}
-                    >
-                      <span className='font-semibold'>
-                        {isSubmitting ? (
-                          <Spin />
-                        ) : isNewUser ? (
-                          "Sign Up"
-                        ) : (
-                          "Sign In"
-                        )}
-                      </span>
-                    </Button>
+                      className={"max-w-72"}
+                      htmlType='submit'
+                      title={isNewUser ? "Sign Up" : "Sign In"}
+                    />
                   )}
                 />
               </div>

@@ -3,9 +3,8 @@ import { useCookies } from "react-cookie";
 import { AuthContext } from "../context/AuthContext";
 import { get } from "lodash";
 import { useAntNotification } from "../utils/notification";
-
 const AuthProvider = ({ children }) => {
-  const [_, setCookie, removeCookie] = useCookies(["auth-token"]);
+  const [_, setCookie, removeCookie] = useCookies(["user-data"]);
   const { antNotification, contextHolder } = useAntNotification();
 
   const authenticate = async ({ email, password }) => {
@@ -14,7 +13,7 @@ const AuthProvider = ({ children }) => {
         "http://127.0.0.1:8090/api/collections/actors/auth-with-password",
         { identity: email, password: password }
       );
-      setCookie("auth-token", get(data, "token"), {
+      setCookie("user-data", data, {
         expires: new Date(Date.now() + 12096e5),
       });
     } catch {
@@ -37,7 +36,7 @@ const AuthProvider = ({ children }) => {
           name: name,
         }
       );
-      setCookie("auth-token", get(data, "token"), {
+      setCookie("user-data", data, {
         expires: new Date(Date.now() + 12096e5),
       });
     } catch {
@@ -50,7 +49,7 @@ const AuthProvider = ({ children }) => {
   };
 
   const unAuthenticate = () => {
-    removeCookie("auth-token");
+    removeCookie("user-data");
   };
 
   const contextData = {

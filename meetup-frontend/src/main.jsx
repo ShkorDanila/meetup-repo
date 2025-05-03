@@ -7,18 +7,15 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { CookiesProvider } from "react-cookie";
 
-import '@fontsource-variable/overpass';
+import "@fontsource-variable/overpass";
+import { IndexProvider } from "./providers/IndexProvider.jsx";
 
 const router = createRouter({ routeTree });
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <CookiesProvider>
-      <AuthProvider>
-        <ApiProvider>
-          <RouterProvider router={router} />
-        </ApiProvider>
-      </AuthProvider>
-    </CookiesProvider>
+    <IndexProvider>
+      <RouterProvider router={router} />
+    </IndexProvider>
   </StrictMode>
 );

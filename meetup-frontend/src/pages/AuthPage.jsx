@@ -4,6 +4,7 @@ import LogoIcon from "../customIcons/LogoIcon";
 import { useForm } from "@tanstack/react-form";
 import { Button, Input, Popover, Spin } from "antd";
 import FormInput from "../universalComponents/FormInput";
+import { validateEmail } from "../utils/email"
 import { BaseButton } from "../universalComponents/BaseButton";
 
 const AuthPage = () => {
@@ -25,14 +26,6 @@ const AuthPage = () => {
       }
     },
   });
-
-  const validateEmail = (email) => {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
 
   return (
     <>
@@ -81,6 +74,7 @@ const AuthPage = () => {
                     return (
                       <>
                         <FormInput
+                          isRequired
                           id={field.name}
                           title={"Name"}
                           errorMessage={field.state.meta.errors.join(", ")}
@@ -110,6 +104,7 @@ const AuthPage = () => {
                     <>
                       <FormInput
                         id={field.name}
+                        isRequired
                         title={"Email"}
                         errorMessage={field.state.meta.errors.join(", ")}
                         name={field.name}
@@ -138,6 +133,7 @@ const AuthPage = () => {
                       <FormInput
                         id={field.name}
                         inputType='password'
+                        isRequired
                         title={"Password"}
                         errorMessage={field.state.meta.errors.join(", ")}
                         name={field.name}

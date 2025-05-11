@@ -6,26 +6,21 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { FloatButton, Layout, Menu } from "antd";
+import { Layout, Menu } from "antd";
 import LogoIcon from "../customIcons/LogoIcon";
 import classNames from "classnames";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useCookies } from "react-cookie";
+import { useAntNotification } from "../utils/notification";
 
-const { Header, Footer, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 const OutletPage = () => {
   const [cookies] = useCookies(["user-data", "company-data"]);
-  const userId = useMemo(() => cookies["user-data"].record.id, [cookies]);
+  const { contextHolder } = useAntNotification();
 
   const navOptions = useMemo(
     () => [
-      {
-        key: "personalCalendarNav",
-        icon: <CalendarOutlined />,
-        label: <Link to={"/personal-calendar"}>Personal calendar</Link>,
-      },
       {
         key: "profileCalendarNav",
         icon: <UserOutlined />,
@@ -33,7 +28,7 @@ const OutletPage = () => {
       },
       {
         key: "meetups",
-        icon: <MediumOutlined />,
+        icon: <CalendarOutlined />,
         label: <Link to={"/meetups"}>Meetups</Link>,
       },
       cookies["user-data"]?.record?.id ===
@@ -48,6 +43,7 @@ const OutletPage = () => {
 
   return (
     <Layout className='w-full h-full bg-[#101011]'>
+      {contextHolder}
       <Sider className='!bg-card-app'>
         <LogoIcon className={"w-20 [&_path]:fill-white m-3"} />
         <Menu
@@ -62,28 +58,6 @@ const OutletPage = () => {
       <Content className=' bg-dark-app px-3 pt-3 overflow-y-auto'>
         <Outlet />
       </Content>
-      {/* <FloatButton.Group
-        className={classNames(
-          "[&_.ant-float-btn-content]:w-full",
-          "[&_.ant-float-btn-icon]:!m-0 [&_.ant-float-btn-icon]:!pb-0.5 [&_.ant-float-btn-icon]:!w-full [&_.ant-float-btn-icon]:!h-full",
-          "[&_.ant-float-btn-body]:!bg-[#1f1f20]",
-          "[&_.anticon]:!pt-0.5 [&_.anticon]:!text-white"
-        )}
-        icon={
-          <div className='w-full h-full grid place-items-center [&_path]:fill-white'>
-            <LogoIcon className='aspect-square w-7 ' />
-          </div>
-        }
-        trigger='click'
-      >
-        {navOptions.map(({ tooltip, icon, key, link }) => (
-          <span key={key} className='relative'>
-            <Link to={link} className=' w-full aspect-square'>
-              <FloatButton tooltip={tooltip} icon={icon} />
-            </Link>
-          </span>
-        ))}
-      </FloatButton.Group> */}
     </Layout>
   );
 };

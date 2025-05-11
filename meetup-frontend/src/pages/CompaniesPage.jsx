@@ -10,11 +10,14 @@ import { mdiChevronLeft, mdiPlus } from "@mdi/js";
 import { BaseButton } from "../universalComponents/BaseButton";
 import { useCookies } from "react-cookie";
 import { get } from "lodash";
+import { useNavigate } from "@tanstack/react-router";
 
 export const CompaniesPage = () => {
   const { companyQuery, createNewCompany } = useContext(CompanyContext);
   const [_, setCookies] = useCookies(["company-data"]);
   const [isCreateNewCompany, setIsCreateNewCompany] = useState(false);
+
+  const navigate = useNavigate();
 
   const toggleIsCreateCompany = () => {
     return setIsCreateNewCompany((prev) => !prev);
@@ -30,15 +33,19 @@ export const CompaniesPage = () => {
         title: value.title,
         description: value.description,
       });
+      navigate({ to: "/meetups" });
     },
   });
 
+  useEffect(() => {
+    console.log(companyQuery.data);
+  }, [companyQuery.data]);
 
   return (
     <div className='w-full h-full bg-[#101011] grid place-items-center relative'>
       <div className='max-w-[90vw] max-h-[70vh] min-w-[30vw] min-h-[40vh] backdrop-blur-md bg-[#7171752d] flex flex-col p-5 items-center gap-6'>
         <label className='text-xl'>
-          {isCreateNewCompany ? "Create" : "Select"} a company
+          {!isCreateNewCompany ? "Create" : "Select"} a company
         </label>
         {isCreateNewCompany ||
         !companyQuery["data"]?.totalItems ||
@@ -68,6 +75,7 @@ export const CompaniesPage = () => {
                     <>
                       <FormInput
                         id={field.name}
+                        isRequired
                         title={"Title"}
                         errorMessage={field.state.meta.errors.join(", ")}
                         name={field.name}
@@ -124,7 +132,10 @@ export const CompaniesPage = () => {
               companyQuery["data"].items.map((item) => (
                 <>
                   <div
-                    onClick={() => setCookies("company-data", item)}
+                    onClick={() => {
+                      setCookies("company-data", item);
+                      navigate({ to: "/meetups" });
+                    }}
                     className='flex gap-2 shadow-md bg-[#d8d8e2] text-black w-full items-center cursor-pointer hover:scale-[101%]'
                   >
                     <Avatar size='40' name={item.params.title || ""} />
@@ -134,16 +145,15 @@ export const CompaniesPage = () => {
               ))}
           </div>
         )}
-        {companyQuery["data"]?.totalItems &&
-          companyQuery["data"]?.totalItems > 0 && (
-            <BaseButton
-              title={
-                isCreateNewCompany ? "To companies list" : "Create new company"
-              }
-              mdiPath={isCreateNewCompany ? mdiChevronLeft : mdiPlus}
-              onClick={toggleIsCreateCompany}
-            />
-          )}
+        {companyQuery["data"]?.totalItems > 0 && (
+          <BaseButton
+            title={
+              isCreateNewCompany ? "To companies list" : "Create new company"
+            }
+            mdiPath={isCreateNewCompany ? mdiChevronLeft : mdiPlus}
+            onClick={toggleIsCreateCompany}
+          />
+        )}
       </div>
     </div>
   );

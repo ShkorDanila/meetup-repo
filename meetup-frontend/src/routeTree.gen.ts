@@ -12,28 +12,17 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ProfileImport } from './routes/profile'
-import { Route as PersonalCalendarImport } from './routes/personal-calendar'
-import { Route as MeetupsImport } from './routes/meetups'
 import { Route as DashboardImport } from './routes/dashboard'
 import { Route as IndexImport } from './routes/index'
+import { Route as MeetupsIndexImport } from './routes/meetups/index'
+import { Route as MeetupsNewMeetupImport } from './routes/meetups/new-meetup'
+import { Route as MeetupsIdImport } from './routes/meetups/$id'
 
 // Create/Update Routes
 
 const ProfileRoute = ProfileImport.update({
   id: '/profile',
   path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const PersonalCalendarRoute = PersonalCalendarImport.update({
-  id: '/personal-calendar',
-  path: '/personal-calendar',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const MeetupsRoute = MeetupsImport.update({
-  id: '/meetups',
-  path: '/meetups',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,6 +35,24 @@ const DashboardRoute = DashboardImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MeetupsIndexRoute = MeetupsIndexImport.update({
+  id: '/meetups/',
+  path: '/meetups/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MeetupsNewMeetupRoute = MeetupsNewMeetupImport.update({
+  id: '/meetups/new-meetup',
+  path: '/meetups/new-meetup',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const MeetupsIdRoute = MeetupsIdImport.update({
+  id: '/meetups/$id',
+  path: '/meetups/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -67,25 +74,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardImport
       parentRoute: typeof rootRoute
     }
-    '/meetups': {
-      id: '/meetups'
-      path: '/meetups'
-      fullPath: '/meetups'
-      preLoaderRoute: typeof MeetupsImport
-      parentRoute: typeof rootRoute
-    }
-    '/personal-calendar': {
-      id: '/personal-calendar'
-      path: '/personal-calendar'
-      fullPath: '/personal-calendar'
-      preLoaderRoute: typeof PersonalCalendarImport
-      parentRoute: typeof rootRoute
-    }
     '/profile': {
       id: '/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileImport
+      parentRoute: typeof rootRoute
+    }
+    '/meetups/$id': {
+      id: '/meetups/$id'
+      path: '/meetups/$id'
+      fullPath: '/meetups/$id'
+      preLoaderRoute: typeof MeetupsIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/meetups/new-meetup': {
+      id: '/meetups/new-meetup'
+      path: '/meetups/new-meetup'
+      fullPath: '/meetups/new-meetup'
+      preLoaderRoute: typeof MeetupsNewMeetupImport
+      parentRoute: typeof rootRoute
+    }
+    '/meetups/': {
+      id: '/meetups/'
+      path: '/meetups'
+      fullPath: '/meetups'
+      preLoaderRoute: typeof MeetupsIndexImport
       parentRoute: typeof rootRoute
     }
   }
@@ -96,57 +110,75 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/meetups': typeof MeetupsRoute
-  '/personal-calendar': typeof PersonalCalendarRoute
   '/profile': typeof ProfileRoute
+  '/meetups/$id': typeof MeetupsIdRoute
+  '/meetups/new-meetup': typeof MeetupsNewMeetupRoute
+  '/meetups': typeof MeetupsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/meetups': typeof MeetupsRoute
-  '/personal-calendar': typeof PersonalCalendarRoute
   '/profile': typeof ProfileRoute
+  '/meetups/$id': typeof MeetupsIdRoute
+  '/meetups/new-meetup': typeof MeetupsNewMeetupRoute
+  '/meetups': typeof MeetupsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
-  '/meetups': typeof MeetupsRoute
-  '/personal-calendar': typeof PersonalCalendarRoute
   '/profile': typeof ProfileRoute
+  '/meetups/$id': typeof MeetupsIdRoute
+  '/meetups/new-meetup': typeof MeetupsNewMeetupRoute
+  '/meetups/': typeof MeetupsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/meetups' | '/personal-calendar' | '/profile'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/profile'
+    | '/meetups/$id'
+    | '/meetups/new-meetup'
+    | '/meetups'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/meetups' | '/personal-calendar' | '/profile'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/profile'
+    | '/meetups/$id'
+    | '/meetups/new-meetup'
+    | '/meetups'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
-    | '/meetups'
-    | '/personal-calendar'
     | '/profile'
+    | '/meetups/$id'
+    | '/meetups/new-meetup'
+    | '/meetups/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
-  MeetupsRoute: typeof MeetupsRoute
-  PersonalCalendarRoute: typeof PersonalCalendarRoute
   ProfileRoute: typeof ProfileRoute
+  MeetupsIdRoute: typeof MeetupsIdRoute
+  MeetupsNewMeetupRoute: typeof MeetupsNewMeetupRoute
+  MeetupsIndexRoute: typeof MeetupsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
-  MeetupsRoute: MeetupsRoute,
-  PersonalCalendarRoute: PersonalCalendarRoute,
   ProfileRoute: ProfileRoute,
+  MeetupsIdRoute: MeetupsIdRoute,
+  MeetupsNewMeetupRoute: MeetupsNewMeetupRoute,
+  MeetupsIndexRoute: MeetupsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -161,9 +193,10 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/dashboard",
-        "/meetups",
-        "/personal-calendar",
-        "/profile"
+        "/profile",
+        "/meetups/$id",
+        "/meetups/new-meetup",
+        "/meetups/"
       ]
     },
     "/": {
@@ -172,14 +205,17 @@ export const routeTree = rootRoute
     "/dashboard": {
       "filePath": "dashboard.jsx"
     },
-    "/meetups": {
-      "filePath": "meetups.jsx"
-    },
-    "/personal-calendar": {
-      "filePath": "personal-calendar.jsx"
-    },
     "/profile": {
       "filePath": "profile.jsx"
+    },
+    "/meetups/$id": {
+      "filePath": "meetups/$id.jsx"
+    },
+    "/meetups/new-meetup": {
+      "filePath": "meetups/new-meetup.jsx"
+    },
+    "/meetups/": {
+      "filePath": "meetups/index.jsx"
     }
   }
 }

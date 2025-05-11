@@ -22,3 +22,4 @@ button {
   font-family: "Overpass Variable", sans-serif !important;
 }
 
+@plugin 'tailwind-scrollbar';

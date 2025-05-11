@@ -34,9 +34,14 @@ const AuthProvider = ({ children }) => {
           password: password,
           passwordConfirm: password,
           name: name,
+          emailVisibility: true,
         }
       );
-      setCookie("user-data", data, {
+      const logined = await axios.post(
+        "http://127.0.0.1:8090/api/collections/actors/auth-with-password",
+        { identity: email, password: password }
+      );
+      setCookie("user-data", logined.data, {
         expires: new Date(Date.now() + 12096e5),
       });
     } catch {

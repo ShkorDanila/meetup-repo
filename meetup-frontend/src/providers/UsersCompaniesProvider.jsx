@@ -19,34 +19,54 @@ const UsersCompaniesProvider = ({ children }) => {
     if (!cookies["user-data"]) {
       return [];
     }
-
     const response = await getListOfEntities({
       filter: [
         "entity_type='company'",
         `params.members~'${cookies["user-data"].record.id}'`,
       ],
     });
+    console.log(response.data);
+    return get(response, "data");
+  }
+
+  async function refetchCompany() {
+    if (!cookies["user-data"]) {
+      return [];
+    }
+
+    const response = await getListOfEntities({
+      filter: [
+        "entity_type='company'",
+        `id="${cookies["company-data"].id}"`,
+        `params.members~'${cookies["user-data"].record.id}'`,
+      ],
+    });
+
+    console.log(get(response, "data").items[0]);
+
+    setCookies("company-data", get(response, "data").items[0]);
     return get(response, "data");
   }
 
   async function createNewCompany({ title, description }) {
     const data = {
       entity_type: "company",
-      actor_id: cookies["user-data"].record.id,
+      actor_id: cookies["user-data"]?.record?.id,
       params: {
         title: title,
         description: description,
-        members: [cookies["user-data"].record.id],
+        members: [cookies["user-data"]?.record?.id || cookies["user-data"]?.id],
       },
     };
-
     const response = await createEntity(data);
-    setCookies("company-data", get(response, 'data'));
+    setCookies("company-data", get(response, "data"));
     return get(response, "data");
   }
 
   return (
-    <CompanyContext.Provider value={{ companyQuery, createNewCompany }}>
+    <CompanyContext.Provider
+      value={{ companyQuery, createNewCompany, refetchCompany }}
+    >
       {children}
     </CompanyContext.Provider>
   );

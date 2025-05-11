@@ -1,14 +1,11 @@
-import { Input } from "antd";
 import classNames from "classnames";
 
-const FormInput = ({
-  placeholder,
+const FormInputWithChildren = ({
   errorMessage,
   className,
   title,
-  inputType = "default",
   isRequired,
-  ...rest
+  children,
 }) => {
   return (
     <div
@@ -26,22 +23,7 @@ const FormInput = ({
       >
         {title}:&nbsp;
       </label>
-      {inputType === "password" && (
-        <Input.Password
-          className='!rounded-none'
-          {...rest}
-          placeholder={placeholder}
-          required={isRequired}
-        ></Input.Password>
-      )}
-      {inputType === "default" && (
-        <Input
-          className='!rounded-none'
-          {...rest}
-          placeholder={placeholder}
-          required={isRequired}
-        ></Input>
-      )}
+      {children}
 
       <label className='text-red-500 mt-0.5 text-sm ml-1'>
         {errorMessage || "\t"}
@@ -50,4 +32,4 @@ const FormInput = ({
   );
 };
 
-export default FormInput;
+export default FormInputWithChildren;

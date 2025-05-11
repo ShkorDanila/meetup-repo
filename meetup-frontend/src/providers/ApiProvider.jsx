@@ -1,5 +1,5 @@
 import axios from "axios";
-import { get, isEmpty } from "lodash";
+import { isEmpty } from "lodash";
 import React, { useMemo } from "react";
 import { useCookies } from "react-cookie";
 import { ApiContext } from "../context/ApiContext";
@@ -19,9 +19,6 @@ const ApiProvider = ({ children }) => {
     [cookies]
   );
 
-  const getAxiosConfig = () => {
-    return;
-  };
   const getListOfEntities = async (config) => {
     let requestString = `/entity/records`;
 
@@ -32,6 +29,7 @@ const ApiProvider = ({ children }) => {
       perPage = -1,
       sort = [],
       filter = [],
+      filterSeparator = "AND",
       skipTotal = -1,
     } = config;
 
@@ -50,7 +48,62 @@ const ApiProvider = ({ children }) => {
     }
 
     if (!isEmpty(filter)) {
-      additions.push(`filter=(${filter.join(" %26%26 ")})`);
+      additions.push(
+        `filter=(${filter.join(filterSeparator === "AND" ? " %26%26 " : " %7C%7C ")})`
+      );
+    }
+
+    if (!isEmpty(sort)) {
+      additions.push(`sort=${sort.join(",")}`);
+    }
+
+    if (!isEmpty(expand)) {
+      additions.push(`expand=${expand.join(",")}`);
+    }
+
+    if (!isEmpty(fields)) {
+      additions.push(`fields=${fields.join(",")}`);
+    }
+
+    if (!isEmpty(additions)) {
+      requestString = requestString.concat("?", additions.join("&"));
+    }
+    const response = await axios.get(requestString, axiosConfig);
+    return response ?? [];
+  };
+
+  const getListOfActors = async (config) => {
+    let requestString = `/actors/records`;
+
+    const {
+      expand = [],
+      fields = [],
+      page = -1,
+      perPage = -1,
+      sort = [],
+      filter = [],
+      filterSeparator = "AND",
+      skipTotal = -1,
+    } = config;
+
+    let additions = [];
+
+    if (page > 0) {
+      additions.push(`page=${page}`);
+    }
+
+    if (perPage > 0) {
+      additions.push(`perPage=${perPage}`);
+    }
+
+    if (skipTotal > 0) {
+      additions.push(`skipTotal=${skipTotal}`);
+    }
+
+    if (!isEmpty(filter)) {
+      additions.push(
+        `filter=(${filter.join(filterSeparator === "AND" ? " %26%26 " : " %7C%7C ")})`
+      );
     }
 
     if (!isEmpty(sort)) {
@@ -69,7 +122,7 @@ const ApiProvider = ({ children }) => {
       requestString = requestString.concat("?", additions.join("&"));
     }
 
-    const response = axios.get(requestString, axiosConfig);
+    const response = await axios.get(requestString, axiosConfig);
     return response ?? [];
   };
 
@@ -92,7 +145,30 @@ const ApiProvider = ({ children }) => {
       requestString = requestString.concat("?", additions.join("&"));
     }
 
-    const { data } = axios.get(requestString, axiosConfig);
+    const { data } = await axios.get(requestString, axiosConfig);
+    return data;
+  };
+
+  const getActorById = async (actor_id, config) => {
+    let requestString = `/actors/records/${actor_id}`;
+
+    const { expand = [], fields = [] } = config;
+
+    let additions = [];
+
+    if (!isEmpty(expand)) {
+      additions.push(`expand=${expand.join(",")}`);
+    }
+
+    if (!isEmpty(fields)) {
+      additions.push(`fields=${fields.join(",")}`);
+    }
+
+    if (!isEmpty(additions)) {
+      requestString = requestString.concat("?", additions.join("&"));
+    }
+
+    const { data } = await axios.get(requestString, axiosConfig);
     return data;
   };
 
@@ -116,7 +192,7 @@ const ApiProvider = ({ children }) => {
       }
     }
 
-    const response = axios.post(requestString, formData, axiosConfig);
+    const response = await axios.post(requestString, formData, axiosConfig);
     return response;
   };
 
@@ -140,13 +216,13 @@ const ApiProvider = ({ children }) => {
       }
     }
 
-    const { data } = axios.patch(requestString, formData, axiosConfig);
+    const { data } = await axios.patch(requestString, formData, axiosConfig);
     return data;
   };
 
   const entityDelete = async (entity_id) => {
     let requestString = `/entity/records/${entity_id}`;
-    const { data } = axios.delete(requestString, axiosConfig);
+    const { data } = await axios.delete(requestString, axiosConfig);
     return data;
   };
 
@@ -156,7 +232,8 @@ const ApiProvider = ({ children }) => {
     entityDelete,
     getEntityById,
     createEntity,
-    getAxiosConfig,
+    getListOfActors,
+    getActorById,
   };
 
   return (
